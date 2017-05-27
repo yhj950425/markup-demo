@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>购物车</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="plugins/layui/css/layui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<link rel="stylesheet" type="text/css" href="css/package.css"/>
+	</head>
+	<body ng-app="package">
+		<div ng-controller="packController">
+			<ul class="top">
+				<li><a>欢迎来到美妆网</a></li>
+				<li><a>上海热线：021-88888888</a></li>
+				<li><a>服务热线：0000-666-888</a></li>
+				<li><a href="register.html">免费注册</a></li>
+				<li><a href="login.html" id="user_menu">你好，请先登录</a></li>			
+			</ul>
+			
+			<ul class="layui-nav navText" lay-filter="">
+ 				<li class="layui-nav-item"><a href="index.html">首页</a></li>
+  				<li class="layui-nav-item"><a href="discount.html">特惠活动</a></li>
+  				<!--<li class="layui-nav-item"><a href="">关于我们</a></li>-->
+  				<li class="layui-nav-item layui-this"><a href="">购物车</a></li>
+			</ul>
+			<table class="table table-bordered table-hover">
+				<caption class="h2 text-center text-info">购物车</caption>
+				<tr>
+					<th class="text-center">状态</th>
+					<th class="text-center">商品</th>
+					<th class="text-center">商品名称</th>
+					<th class="text-center">单价/元</th>
+					<th class="text-center">数量</th>
+					<th class="text-center">总价/元</th>
+					<th class="text-center">操作</th>
+				</tr>
+				<tr class="text-center" ng-repeat="object in items">
+					<td>
+						<input type="checkbox"/>
+						<input type="hidden" name="" id="" value="{{object.id}}" />
+					</td>
+					<td>
+						<img src="{{object.src}}" alt="" />
+					</td>
+					<td><span>{{object.name}}</span></td>
+					<td><span>{{object.price}}</span></td>
+					<td><span>{{object.count}}</span></td>
+					<td><span>{{object.totalprice}}</span></td>
+					<td><a href="package.html"><button class="btn btn-danger btn-sm" ng-click="packdelete(object.id)">删除</button></a></td>
+				</tr>
+				<tr class="text-left">
+					<td>
+						<a href="javascript:void(0)" ng-click="check()">全选</a>
+						<a  href="javascript:void(0)" ng-click="cancelcheck()" style="margin-left: 20px;">取消全选</a>
+					</td>
+				</tr>
+				<tr class="text-right">
+					<td colspan="7">
+						<ul class="pagination" style="float: left;">
+							<li>
+								<a ng-click="Start()">
+									<span>首页</span>
+								</a>
+							</li>
+							<li>
+							<a ng-click="Previous()">
+							<span>上一页</span>
+							</a>
+							</li>
+							<li ng-repeat="page in pageList" ng-class="{active: isActivePage(page)}" >
+							<a ng-click="selectPage(page)" >{{ page }}</a>
+							</li>
+							<li>
+							<a ng-click="Next()">
+							<span>下一页</span>
+							</a>
+							</li>
+							<li>
+								<a ng-click="End()">
+									<span>末页</span>
+								</a>
+							</li>
+							<li>
+								<a href="">
+									<span>共{{pages}}页</span>
+								</a>
+							</li>
+						</ul>
+						<button class="btn btn-primary" ng-click="buy()">结算{{count}}</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+	<script src="js/JQuery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="plugins/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/angular.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		layui.use('element', function(){
+			var element = layui.element();
+//…
+		});
+		
+		//获取session里面的记录
+		var userPhone=decodeURI(document.cookie.split(";")[0].split("=")[1]);
+			console.log(userPhone)
+			var password=document.cookie.split(";")[0].split("=")[1];
+			if(userPhone && password){
+				$("#user_menu").html("欢迎"+userPhone+"登录");
+				
+			}else{
+				$("#user_menu").html("你好,请先登录");
+			}
+		
+		
+		var app=angular.module("package",[]);
+		app.controller("packController",function($scope,$http){
+			$http.get("package2.php").success(function(response){
+			$scope.data = response.data;
+			//分页总数
+			$scope.pageSize = 5;
+			
+			$scope.pages = response.page ;//分页数
+			$scope.newPages = $scope.pages > 5 ?5 : $scope.pages;
+			$scope.pageList = [];
+			$scope.selPage = 1;
+			//设置表格数据源(分页)
+			$scope.setData = function () {
+				if($scope.pages>0){
+					$scope.items = $scope.data.slice(($scope.pageSize * ($scope.selPage - 1)), ($scope.selPage * $scope.pageSize));//通过当前页数筛选出表格当前显示数据
+				}
+				
+			}
+			if($scope.pages>0){
+				$scope.items = $scope.data.slice(0, $scope.pageSize);
+			}
+			//分页要repeat的数组
+			for (var i = 0; i < $scope.newPages; i++) {
+			$scope.pageList.push(i + 1);
+			}
+			//打印当前选中页索引
+			$scope.selectPage = function (page) {
+			//不能小于1大于最大
+			
+			if (page < 1 || page > $scope.pages) {
+				
+				return;
+			};
+			//最多显示分页数5
+			if (page > 2) {
+			//因为只显示5个页数，大于2页开始分页转换
+			var newpageList = [];
+			for (var i = page-3 ; i < ((page +2) > $scope.pages ? $scope.pages : (page + 2)) ; i++) {
+				newpageList.push(i + 1);
+			}
+			$scope.pageList = newpageList;
+			}
+			$scope.selPage = page;
+			$scope.setData();
+			$scope.isActivePage(page);
+			console.log("选择的页：" + page);
+			};
+			//设置当前选中页样式
+			$scope.isActivePage = function (page) {
+			return $scope.selPage == page;
+			};
+			//首页
+			$scope.Start=function(){
+				$scope.selectPage(1);
+			}
+			//上一页
+			$scope.Previous = function () {
+			$scope.selectPage($scope.selPage - 1);
+			}
+			//下一页
+			$scope.Next = function () {
+			$scope.selectPage($scope.selPage + 1);
+			};
+			//末页
+			$scope.End=function(){
+				$scope.selectPage($scope.pages);
+			}
+				
+			}).error(function(){
+				
+			})
+			
+			//删除
+			$scope.packdelete=function(id,obj){
+				$http.get("packdel.php",{params:{proId:id}}).success(function(data){
+					console.log(data);
+					
+				}).error(function(error){
+					
+				})
+			}
+			
+			//全选
+			$scope.check=function(){
+				$("input[type=checkbox]").attr("checked",true);
+			}
+			//取消全选
+			$scope.cancelcheck=function(){
+				$("input[type=checkbox]").removeAttr("checked");
+			}
+			
+			
+//			//结算
+			$scope.buy=function(){
+				var sum=0;
+				var state=0;
+				$("input[type=checkbox]:checked").each(function(){
+					var ele=$(this).parent().parent();
+					var td=$(ele).find("td").eq(5);
+					var val=Number($(td).children().text());
+					var bro=$(this).parent();
+					var brob=$(bro).find("input").eq(1).val();
+					console.log(brob);
+					sum+=val;
+					$http.get("buy2.php",{params:{id:brob}}).success(function(data){
+						console.log(data);
+					}).error(function(error){
+						
+					})
+				});
+				
+//				if($("input[type=checkbox]").is(":checked")){
+//					state=1;
+//					$http.get("buy2.php",{params:{sum:sum,state:state}}).success(function(){
+//						console.log(data);
+//					}).error(function(error){
+//						
+//					})
+//				}
+				
+				window.location.href="order2.html?sum="+sum;			
+			}
+			
+		})
+		
+	</script>
+</html>

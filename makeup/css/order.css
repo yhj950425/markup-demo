@@ -1,0 +1,32 @@
+.wrap{
+	width: 600px;
+	/*height: 800px;*/
+	margin: auto;
+	background: lemonchiffon;
+	
+}
+.nav>span:nth-child(1){
+	font: normal 20px "微软雅黑";
+}
+div{
+	margin-top: 20px;
+	overflow: hidden;
+}
+div>select{
+	font: normal 20px "微软雅黑";
+}
+ul>li>div>img{
+	width: 80px;
+	height: 80px;
+	background: red;
+	float: left;
+	}
+.text{
+	float: left;
+	margin-left: 10px;
+	margin-top: -20px;
+}
+.procount{
+	float: right;
+	margin-right: 20px;
+}

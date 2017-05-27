@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>订单</title>
+		<link rel="stylesheet" type="text/css" href="css/order.css"/>
+	</head>
+	<body ng-app="orderApp">
+		<div class="wrap" ng-controller="orderController">
+			<div class="nav" onClick="javascript:history.back(-1);">
+				<span><</span>
+				<span>确认订单</span>
+			</div>
+		<div>
+			<select name="">
+				<option value="">
+					<span>叶华婧</span>
+					<span>18895734800</span>
+					<p>宿州市宿州学院东区</p>
+				</option>
+				<option value="">
+					<span>叶华婧</span>
+					<span>18895734800</span>
+					<p>宿州市宿州学院东区</p>
+				</option>
+				<option value="">
+					<span>叶华婧</span>
+					<span>18895734800</span>
+					<p>宿州市宿州学院东区</p>
+				</option>
+			</select>
+		</div>
+		<ul>
+			<li ng-repeat="obj in arr">
+				<div>
+					<img src="{{obj.src}}" alt="" />
+					<div class="text">
+						<p>{{obj.name}}</p>
+						<p>发货时间：卖家承诺72小时内发货</p>
+						<p>
+							<span>￥{{obj.price}}</span>
+							<span style="float: right;">x{{obj.count}}</span>
+						</p>
+					</div>
+				</div>
+				
+				<div>
+					<label for="">配送方式</label>
+					<select name="">
+						<option value="">快递免邮</option>
+					</select>
+				</div>
+				<div>
+					<label for="">运费险</label>
+					<select name="">
+						<option value="">卖家投保</option>
+					</select>
+				</div>
+				<div>
+					买家留言：<textarea name="" rows="" cols="" placeholder="选填:对本次建议的说明"></textarea>
+				</div>
+				<hr />
+			</li>
+			
+			<div class="procount">
+					共{{count}}件商品 共计：{{sum}}元
+					<button style="background: orange;">提交订单</button>
+				</div>
+		</ul>
+		
+	</div>
+	
+		
+	</body>
+	<script src="js/JQuery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/angular.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		urlinfo=window.location.href; //获取当前页面的url
+//		console.log(urlinfo);
+		len=urlinfo.length;//获取url的长度
+//		console.log(len);
+		offset=urlinfo.indexOf("?");//设置参数字符串开始的位置
+		newsidinfo=urlinfo.substr(offset,len)//取出参数字符串 这里会获得类似“id=1”这样的字符串
+		newsids=newsidinfo.split("=");//对获得的参数字符串按照“=”进行分割
+		newsnum=newsids[1];//得到参数值
+		newsname=newsids[0];//得到参数名字
+		var app=angular.module("orderApp",[]);
+		app.controller("orderController",function($scope,$http){
+			$http.get("buy3.php",{params:{sum:newsnum}}).success(function(data){
+				console.log(data);
+				$scope.arr=data.data;
+				$scope.sum=data.sum;
+				$scope.count=0;
+				
+				for(var i=0;i<data.data.length;i++){
+					$scope.count+=Number(data.data[i].count);
+				}
+				console.log($scope.count);
+			}).error(function(error){
+				
+			})
+			
+			
+		})
+		
+	</script>
+</html>

@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8" />
+		<title>注册</title>
+		<link rel="stylesheet" href="css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="css/login_public.css" />
+		<link rel="stylesheet" type="text/css" href="css/regists.css" />
+		<style>
+			td>p{
+				color:red;
+			}
+			form>span{
+				color:red;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="login_wrap">
+			<div class="register_content">
+				<p class="registerText">个人用户-免费注册</p>
+				<div class="register_form">
+					<form action="" method="post">
+						<table>
+							<tr>
+								<th>手机号:</th>
+								<td colspan="2">
+									<input type="text" id="phoneN" value="" onblur="testPhoneNum(this)" />
+									<p id="phoneNumText"></p>
+								</td>
+							</tr>
+							<tr>
+								<th>用户名:</th>
+								<td colspan="2">
+									<input type="text" id="username" value="" onblur="testUsername(this)"/>
+									<p id="userText"></p>
+								</td>
+							</tr>
+							<tr>
+								<th>密码:</th>
+								<td colspan="2">
+									<input type="text" id="password" value="" onblur="passText(this)">
+									<p id="passText"></p>
+								</td>
+							</tr>
+							<tr>
+								<th>验证码:</th>
+								<td><input type="text" name="code" id="code" /></td>
+								<td><span id="confirm">1</span></td>
+							</tr>
+							<tr>
+								<th></th>
+								<td colspan="2"><span id="yzm"></span></td>
+							</tr>
+						</table>
+						<input type="button" value="注册" id="registsBtn" onclick="sub()" />
+						<span></span>
+					</form>
+				</div>
+			</div>
+
+			<div class="login_bottom">
+				<div class="login_bottom_list">
+					<a href="#">关于美妆</a>
+					<a href="#">团队介绍</a>
+					<a href="#">高薪诚聘</a>
+					<a href="#">业务合作</a>
+					<a href="#">会员积分</a>
+					<a href="#">投诉建议</a>
+					<a href="#">友情链接</a>
+				</div>
+				<p>版权所有美妆网 © Copyright 2016 - 2017 www.meizhuang.cn All Rights Reserved.</p>
+			</div>
+		</div>
+	</body>
+	<script src="js/JQuery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var code;
+		function createCode() {
+			code = "";
+			var codelength = 6;
+			var codeChars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"];
+
+			for(var i = 0; i < codelength; i++) {
+
+				var codeNum = parseInt(Math.random() * (35 - 0 + 1) + 0);
+
+				code += codeChars[codeNum];
+			}
+			$("#confirm").html(code);
+		}
+
+		createCode();
+
+		function contrastCode() {
+			var txt = $("#code").val();
+			console.log(txt);
+			if(txt.length <= 0) {
+				$("#yzm").html("请输入验证码");
+			} else if(txt.toUpperCase() != code.toUpperCase()) {
+				$("#yzm").html("");
+				$("#yzm").html("验证码错误,请重新输入");
+				
+				createCode();
+			} else {
+				$("#yzm").html("");
+			}
+		}
+
+		$("#registsBtn").click(function() {
+			contrastCode();
+
+		});
+		$("#confirm").click(function() {
+			createCode();
+		});
+		var phoneNum = document.getElementById("phoneN");
+		var username =document.getElementById("username");
+		var password =document.getElementById("password");
+		function testPhoneNum(obj) {
+			$.ajax({
+				type: "post",
+				url: "regists_phoneNumber.php",
+				async: true,
+				data: {
+					phoneN: obj.value,
+					username: username.value,
+					password: password.value
+				},
+				dataType: "json",
+				success: function(data) {
+					console.log("成功");
+					console.log(data);
+					$("#phoneNumText").html(data.msg);
+				},
+				error: function(error) {
+					console.log("失败");
+					console.log(error);
+				}
+			});
+		}
+		function testUsername(obj){
+			$.ajax({
+				type: "post",
+				url: "regists_username.php",
+				async: true,
+				data: {
+					phoneN: phoneN.value,
+					username: obj.value,
+					password: password.value
+				},
+				dataType: "json",
+				success: function(data) {
+					console.log("成功");
+					console.log(data);
+					$("#userText").html(data.msg);
+				},
+				error: function(error) {
+					console.log("失败");
+					console.log(error);
+				}
+			});
+		}
+		function passText(obj){
+			$.ajax({
+				type: "post",
+				url: "regists_password.php",
+				async: true,
+				data: {
+					phoneN: phoneN.value,
+					username:username.value,
+					password:obj.value
+				},
+				dataType: "json",
+				success: function(data) {
+					console.log("成功");
+					console.log(data);
+					$("#passText").html(data.msg);
+				},
+				error: function(error) {
+					console.log("失败");
+					console.log(error);
+				}
+			});
+		}
+		
+		function sub() {
+			$.ajax({
+				type: "post",
+				url: "registsSub.php",
+				async: true,
+				data: {
+					phoneN: phoneNum.value,
+					username: username.value,
+					password: password.value
+				},
+				dataType: "json",
+				success: function(data) {
+					console.log("成功");
+					console.log(data);
+					if(data.msg!="注册成功"){
+						$("form>span").html(data.msg);
+					}else{
+						window.location.href="login.html";
+						console.log(11);
+					}
+					
+				},
+				error: function(error) {
+					console.log("失败");
+					console.log(error);
+				}
+			});
+		}
+	</script>
+
+</html>

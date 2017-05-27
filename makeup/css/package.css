@@ -1,0 +1,13 @@
+tr>td>img{
+	width: 60px;
+	height: 60px;
+}
+tr>td>span{
+	line-height: 60px;
+}
+button{
+	margin-top: 15px;
+}
+tr>td>input[type=checkbox]{
+	margin-top:22px;
+}

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>商品详情</title>
+		<link rel="stylesheet" type="text/css" href="plugins/layui/css/layui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/productdetail.css"/>
+	</head>
+	<body ng-app="myApp">
+		<div class="prodetail_wrap" ng-controller="myController">
+			<div class="header">
+				<span class="layui-breadcrumb">
+		  			<a href="">首页</a>
+		  			<a href="">护肤品</a>
+		  			<a href="">洗面奶</a>
+				</span>
+			</div>
+			<div class="prodetail_content">
+				<div class="content_left">
+					<img src="{{obj.src}}"/>
+				</div>
+				<div class="content_right">
+					<p class="productName">{{obj.name}}</p>
+					<p class="productDetail">{{obj.description}}</p>
+					<p class="productPrice"><span>￥</span> {{obj.price}} <span>元</span></p>
+					<p class="detail">
+						<span>快递：0.00</span>
+						<span>月销售21029笔</span>
+						<span>上海</span>
+					</p>
+					<div class="count">
+						<span>购买数量</span>
+						<div>
+							<button ng-click="reducecount()">-</button>
+							<span id="count">1</span>
+							<button ng-click="addcount()">+</button>
+						</div>
+						
+					</div>
+					<div class="method">
+						<a class="pack" data-toggle="modal"  ng-click="addpack(obj.price,obj.name,obj.src)">加入购物车</a>
+						<a href="order.html?data_id={{obj.productId}}&count={{count}}" class="orderbuy">立即购买</a>
+					</div>
+				</div>
+			</div>
+			<div class="modal" role="dialog" id="myModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" data-dismiss="modal">&times;</button>
+							<div class="modal-title">
+								<h4 style="color: green;">商品已成功添加到购物车</h4>
+							</div>
+						</div>
+						<div class="modal-body">
+							<a href="index.html">继续购物</a>
+							<a href="package.html">去购物车结算</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/JQuery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="plugins/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/angular.min.js" type="text/javascript" charset="utf-8"></script>
+	<!--<script src="js/productDetail.js" type="text/javascript" charset="utf-8"></script>-->
+	<script type="text/javascript">
+		layui.use('element', function(){
+			var element = layui.element();
+
+		//…
+		});
+		//获取session里面的记录
+		var userPhone=decodeURI(document.cookie.split(";")[0].split("=")[1]);
+			console.log(userPhone)
+			var password=document.cookie.split(";")[0].split("=")[1];
+			if(userPhone && password){
+				$("#user_menu").html("欢迎"+userPhone+"登录");
+				
+			}else{
+				$("#user_menu").html("你好,请先登录");
+			}
+			/* 用途: 接收地直栏参数 取id=1 根据ID的值 */
+		urlinfo=window.location.href; //获取当前页面的url
+//		console.log(urlinfo);
+		len=urlinfo.length;//获取url的长度
+//		console.log(len);
+		offset=urlinfo.indexOf("?");//设置参数字符串开始的位置
+		newsidinfo=urlinfo.substr(offset,len)//取出参数字符串 这里会获得类似“id=1”这样的字符串
+		newsids=newsidinfo.split("=");//对获得的参数字符串按照“=”进行分割
+		newsid=newsids[1];//得到参数值
+		newsname=newsids[0];//得到参数名字
+		
+
+		var ling = "";
+		var sum=Number($("#count").html());
+		var val=Number($("#count").html());
+		var orderbuy=document.getElementsByClassName("orderbuy")[0];
+		
+		var app=angular.module("myApp",[]);
+		app.controller("myController",function($scope,$http){
+			
+			
+			$http.get("productDetail.php",{params:{dataId:newsid}}).success(function(data){
+				$scope.obj=data;
+				console.log(data);
+			}).error(function(error){
+				console.log(error);
+			})
+			
+			//加减数量
+			$(function(){
+				$scope.addcount=function(){
+					sum+=1;
+					$("#count").html(sum);
+					var buyArr=orderbuy.href.split("count=");
+					ling = buyArr[0];
+					buyArr[1] = sum;
+					var hrefStrBuy = buyArr.join("count=");
+					orderbuy.href = hrefStrBuy;
+					
+				}
+				$scope.reducecount=function(){
+					sum-=1;
+					if(sum<1){
+						sum=1;
+					}
+					$("#count").html(sum);
+					var buyArr=orderbuy.href.split("count=");
+					ling = buyArr[0];
+					
+					buyArr[1] = sum;
+					
+					var hrefStrBuy = buyArr.join("count=");
+					orderbuy.href = hrefStrBuy;
+				}
+				
+				$scope.count=sum;
+				//把最终的数量放到数据库
+					$scope.addpack=function(price,name,src){
+					console.log(price);
+					console.log(name);
+					console.log(src);
+					var val=Number($("#count").html());
+					var userPhone=decodeURI(document.cookie.split(";")[0].split("=")[1]);
+					var password=document.cookie.split(";")[0].split("=")[1];
+					
+					if(userPhone && password){
+						$(".pack").attr("data-target","#myModal");
+						$http.get("package.php",{params:{count:val,productId:newsid,proprice:price,proname:name,prosrc:src}}).success(function(data){
+							console.log("成功");
+							console.log(data);
+						}).error(function(error){
+							console.log("失败");
+						})
+				
+					}else{
+						window.location.href="login.html";
+					}
+					
+				}
+				
+			})
+		})
+		
+	</script>
+</html>

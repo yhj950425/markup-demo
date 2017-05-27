@@ -1,0 +1,186 @@
+* {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	text-decoration: none;
+}
+
+a {
+	color: #55555F;
+}
+.footer {
+	height: 520px;
+	background-color: white;
+}
+.footerUp {
+	width: 1200px;
+	height: 400px;
+	margin: 0 auto;
+}
+
+.footerMiddle {
+	width: 1200px;
+	height: 46px;
+	margin: 0 auto;
+}
+
+.footerDown {
+	width: 1200px;
+	height: 60px;
+	margin: 0 auto;
+	margin-bottom: 60px;
+}
+
+.footerUp1 {
+	width: 1200px;
+	height: 180px;
+	border-bottom: 1px solid #ccc;
+}
+
+.footerUp1>div {
+	float: left;
+}
+
+.footerUp1>div>div {
+	float: left;
+	margin-top: 60px;
+}
+
+.footerUp1>div>div:nth-child(2) {
+	margin-right: 45px;
+}
+
+.footerUp1>div>div:nth-child(2) {
+	font-size: 20px;
+	padding-top: 36px;
+	text-align: left;
+	text-indent: 16px;
+	color: #222;
+	letter-spacing: 1px;
+	font-family: "宋体";
+}
+
+.footerUp2 {
+	margin-top: 40px;
+}
+
+.footerUp2>div:nth-child(1) {
+	margin-left: 20px;
+}
+
+.footerUp2>div>div {
+	font-family: "宋体";
+	font-size: 16px;
+	color: #222;
+	margin-bottom: 20px;
+}
+
+.footerUp2>div>a {
+	display: block;
+	font-size: 14px;
+	font-family: "宋体";
+	color: #555;
+	line-height: 30px;
+}
+
+.footerUp2>div>a:hover {
+	color: red;
+}
+
+.footerUp2>div {
+	float: left;
+	width: 144px;
+	height: 130px;
+}
+
+.footerUp2>div:nth-child(5) {
+	border-right: 1px solid #ccc;
+}
+
+.connect {
+	margin-left: 40px;
+}
+
+.connect>div:nth-child(1) {
+	color: #E53E49;
+	font-size: 20px;
+	font-weight: bold;
+	font-family: '宋体';
+}
+
+.connect>div:nth-child(2),
+.connect>div:nth-child(3) {
+	width: 150px;
+	font-family: '宋体';
+	font-size: 14px;
+	margin-bottom: 15px;
+	margin-top: -10px;
+}
+
+.connect>div:nth-child(4)>a {
+	display: block;
+	width: 140px;
+	height: 30px;
+	margin-top: 15px;
+	font-size: 14px;
+	color: red;
+	line-height: 30px;
+	text-indent: 62px;
+	border: 1px solid red;
+	background-image: url(../../img/homePage/img/zx.jpg);
+	background-repeat: no-repeat;
+	background-position: 5px 3px;
+}
+
+.footerUp2_code {
+	position: relative;
+}
+
+.footerUp2_code>div {
+	position: absolute;
+	top: 5px;
+	left: 40px;
+	color: #747C74;
+	font-size: 14px;
+	text-align: center;
+	line-height: 30px;
+}
+.footerUp2_code>div:nth-child(2) {
+	left: 160px;
+}
+.footerMiddle {
+	width: 1200px;
+	height: 46px;
+}
+.footerMiddle * {
+	float: left;
+}
+.footerMiddle>div:nth-child(1) {
+	line-height: 46px;
+}
+#footerMiddleBox {
+	position: relative;
+	overflow: hidden;
+	width: 1120px;
+	height: 46px;
+	left: 10px;
+}
+#stage {
+	width: 4100px;
+	position: absolute;
+	line-height: 46px;
+	overflow: hidden;
+}
+#stage>li>a:hover {
+	color: red;
+}
+#stage>li {
+	margin-left: 30px;
+}
+.footerDown {
+	font-size: 14px;
+	text-align: center;
+}
+.footerDown>div>span>a:hover {
+	color: red;
+}
